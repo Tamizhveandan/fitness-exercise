@@ -9,6 +9,8 @@ import SimilarExercises from '../components/SimilarExercises'
 const ExerciseDetails = () => {
   const [exerciseVideos , setExerciseVideos] = useState([])
   const [exerciseDetail,setExerciseDetail] = useState({})
+  const [targetMuscleExercises , setTargetMuscleExercises] = useState([])
+  const [equipmentExercises , setEquipmentExercises] = useState([])
   const {id} = useParams();
 
   useEffect(() =>{
@@ -18,8 +20,15 @@ const ExerciseDetails = () => {
 
       const exersiceDetailData = await fetchData(`${exerciseDbUrl}/exercises/exercise/${id}`,exerciseOptions)
       setExerciseDetail(exersiceDetailData)
+
       const exersiceVideosData = await fetchData(`${youtubeSearchUrl}/search?query=${exersiceDetailData.name}`,youtubeOptions)
       setExerciseVideos(exersiceVideosData.contents)
+      
+      const targetMuscleExersiceData = await fetchData(`${exerciseDbUrl}/exercises/target/${exersiceDetailData.target}`,exerciseOptions)
+      setTargetMuscleExercises(targetMuscleExersiceData)
+
+      const equipmentExersiceData = await fetchData(`${exerciseDbUrl}/exercises/equipment/${exersiceDetailData.equipment}`,exerciseOptions)
+      setEquipmentExercises(equipmentExersiceData)
 
     }
     fetchExercisesData()
@@ -30,7 +39,7 @@ const ExerciseDetails = () => {
     <Box>
       <Detail exerciseDetail={exerciseDetail}/>
       <ExerciseVideos exerciseVideos={exerciseVideos} name={exerciseDetail.name}/>
-      <SimilarExercises/>
+      <SimilarExercises targetMuscleExercises={targetMuscleExercises} equipmentExercises={equipmentExercises}/>
     </Box>
   )
 }
